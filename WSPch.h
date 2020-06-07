@@ -70,6 +70,11 @@
 
 	#define WEISS__OS_LINUX
 
+	// X11 : For Linux Windows
+	#include <X11/Xos.h>
+	#include <X11/Xlib.h>
+	#include <X11/Xutil.h>
+
 #elif defined(__APPLE__) && defined(__MACH__)
 
 	#include <TargetConditionals.h>
@@ -92,11 +97,11 @@
 
 #if defined(_NDEBUG) || defined(NDEBUG)
 
-#define __WEISS__RELEASE_MODE
+	#define __WEISS__RELEASE_MODE
 
 #else // end of #if defined(_NDEBUG) || defined(NDEBUG)
 
-#define __WEISS__DEBUG_MODE
+	#define __WEISS__DEBUG_MODE
 
 #endif
 
