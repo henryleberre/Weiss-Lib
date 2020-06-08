@@ -3,6 +3,13 @@
 #include "WSPch.h"
 #include "WSMath.h"
 
+#ifdef __WEISS__OS_LINUX
+
+	#define __WEISS__XLIB_MOUSE_MASKS (PointerMotionMask | ButtonPressMask | ButtonReleaseMask)
+	#define __WEISS__XLIB_KEYBOARD_MASKS (KeyPressMask | KeyReleaseMask)
+
+#endif // __WEISS__OS_LINUX
+
 namespace WS {
 
 	class Window;
@@ -15,7 +22,6 @@ namespace WS {
 
 		int16_t m_wheelDelta = 0;
 
-		bool m_bIsCursorInWindow  = false;
 		bool m_bIsLeftButtonDown  = false;
 		bool m_bIsRightButtonDown = false;
 
@@ -43,15 +49,14 @@ namespace WS {
 
 		[[nodiscard]] inline bool IsLeftButtonDown()  const noexcept { return this->m_bIsLeftButtonDown;  }
 		[[nodiscard]] inline bool IsRightButtonDown() const noexcept { return this->m_bIsRightButtonDown; }
-		[[nodiscard]] inline bool IsCursorInWindow()  const noexcept { return this->m_bIsCursorInWindow;  }
 
 	private:
 		void BeginUpdate() WS_NOEXCEPT;
 
 #ifdef __WEISS__OS_WINDOWS
-		std::optional<LRESULT> HandleEvent(const UINT msg, const WPARAM wParam, const LPARAM lParam) WS_NOEXCEPT;
+		std::optional<LRESULT> WinHandleEvent(const UINT msg, const WPARAM wParam, const LPARAM lParam) WS_NOEXCEPT;
 #elif defined(__WEISS__OS_LINUX)
-		bool HandleEvent(const XEvent& xEvent) WS_NOEXCEPT;
+		void LinUpdate(::Display* pDisplayHandle) WS_NOEXCEPT;
 #endif
 	};
 

@@ -106,7 +106,7 @@ namespace WS {
 			return 0;
 		}
 
-		std::optional<LRESULT> mouseOptional = this->m_mouse.HandleEvent(msg, wParam, lParam);
+		std::optional<LRESULT> mouseOptional = this->m_mouse.WinHandleEvent(msg, wParam, lParam);
 		if (mouseOptional.has_value()) return mouseOptional.value();
 
 		return {  };
@@ -142,7 +142,7 @@ namespace WS {
 		::XSetStandardProperties(this->m_pDisplayHandle, this->m_windowHandle, title, title, None, NULL, 0, NULL);
 
 		// Select Input Masks
-		::XSelectInput(this->m_pDisplayHandle, this->m_windowHandle, ExposureMask | ButtonPressMask | KeyPressMask);
+		::XSelectInput(this->m_pDisplayHandle, this->m_windowHandle, __WEISS__XLIB_ALL_MASKS);
 
 		this->Show();
 	}
@@ -168,11 +168,7 @@ namespace WS {
 	void Window::Update() WS_NOEXCEPT
 	{
 		this->m_mouse.BeginUpdate();
-
-		::XEvent xEvent;
-		while (XCheckMaskEvent(this->m_pDisplayHandle, ExposureMask | ButtonPressMask | KeyPressMask, &xEvent)) {
-			if (this->m_mouse.HandleEvent(xEvent)) break;
-		}
+		this->m_mouse.LinUpdate(this->m_pDisplayHandle);
 	}
 
 	Window::~Window() WS_NOEXCEPT

@@ -6,13 +6,6 @@ namespace WS {
 	{
 		this->m_deltaPosition = { 0, 0 };
 		this->m_wheelDelta    = 0;
-
-#ifdef __WEISS__OS_LINUX
-
-		this->m_bIsLeftButtonDown  = false;
-		this->m_bIsRightButtonDown = false;
-
-#endif
 	}
 
 #ifdef __WEISS__OS_WINDOWS
@@ -34,7 +27,7 @@ namespace WS {
 
 	}
 
-	std::optional<LRESULT> Mouse::HandleEvent(const UINT msg, const WPARAM wParam, const LPARAM lParam) WS_NOEXCEPT
+	std::optional<LRESULT> Mouse::WinHandleEvent(const UINT msg, const WPARAM wParam, const LPARAM lParam) WS_NOEXCEPT
 	{
 		switch (msg)
 		{
@@ -60,14 +53,9 @@ namespace WS {
 
 				return 0;
 			}
-		case WM_MOUSELEAVE:
-			this->m_bIsCursorInWindow;
-
-			return 0;
 		case WM_MOUSEMOVE:
-			this->m_position = { static_cast<uint16_t>(GET_X_LPARAM(lParam)), static_cast<uint16_t>(GET_Y_LPARAM(lParam)) };
-
-			this->m_bIsCursorInWindow = true;
+			this->m_position = { static_cast<uint16_t>(GET_X_LPARAM(lParam)),
+								 static_cast<uint16_t>(GET_Y_LPARAM(lParam)) };
 
 			return 0;
 		case WM_LBUTTONDOWN:
@@ -97,22 +85,43 @@ namespace WS {
 
 #elif defined(__WEISS__OS_LINUX)
 
-	bool Mouse::HandleEvent(const XEvent& xEvent) WS_NOEXCEPT
+	void Mouse::LinUpdate(::Display* pDisplayHandle) WS_NOEXCEPT
 	{
-		switch (xEvent.type) {
-		case ButtonPressMask:
-			switch (xEvent.xbutton.button) {
-			case 1:
-				this->m_bIsLeftButtonDown = true;
+		::XEvent xEvent;
+		while (XCheckMaskEvent(pDisplayHandle, __WEISS__XLIB_MOUSE_MASKS, &xEvent)) {
+			switch (xEvent.type) {
+			case ButtonPress:
+				switch (xEvent.xbutton.button) {
+				case Button1:
+					this->m_bIsLeftButtonDown = true;
+					break;
+				case Button3:
+					this->m_bIsRightButtonDown = true;
+					break;
+				case Button4:
+					this->m_wheelDelta += xEvent.xbutton.y;
+					break;
+				case Button5:
+					this->m_wheelDelta -= xEvent.xbutton.y;
+					break;
+
 				break;
-			case 3:
-				this->m_bIsRightButtonDown = true;
+}			case ButtonRelease:
+				switch (xEvent.xbutton.button) {
+				case 1:
+					this->m_bIsLeftButtonDown = false;
+					break;
+				case 3:
+					this->m_bIsRightButtonDown = false;
+					break;
+				}
+
+				break;
+			case MotionNotify:
+				this->m_position = { xEvent.xmotion.x, xEvent.xmotion.y };
+
 				break;
 			}
-			return true;
-
-		default:
-			return false;
 		}
 	}
 

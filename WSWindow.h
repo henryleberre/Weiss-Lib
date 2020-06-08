@@ -3,6 +3,13 @@
 #include "WSPch.h"
 #include "WSPeripheral.h"
 
+#ifdef __WEISS__OS_LINUX
+
+    #define __WEISS__XLIB_WINDOW_MASKS (ExposureMask)
+    #define __WEISS__XLIB_ALL_MASKS (__WEISS__XLIB_WINDOW_MASKS | __WEISS__XLIB_MOUSE_MASKS | __WEISS__XLIB_KEYBOARD_MASKS)
+
+#endif // __WEISS__OS_LINUX
+
 namespace WS {
 
 #ifdef __WEISS__OS_WINDOWS
@@ -10,7 +17,7 @@ namespace WS {
     static LRESULT CALLBACK WindowsWindowWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 #endif // __WEISS__OS_WINDOWS
-    
+
     class Window {
     private:
 #ifdef __WEISS__OS_WINDOWS
@@ -21,6 +28,12 @@ namespace WS {
 
         ::Display* m_pDisplayHandle;
         ::Window   m_windowHandle;
+
+        static constexpr const long windowMasks = ExposureMask;
+        static constexpr const long mouseMasks = PointerMotionMask | ButtonPressMask | ButtonReleaseMask;
+        static constexpr const long keyboardMasks = KeyPressMask | KeyReleaseMask;
+        
+        static constexpr const long masks = windowMasks | mouseMasks | keyboardMasks;
 
 #endif
 
