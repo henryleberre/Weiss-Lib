@@ -64,11 +64,14 @@
 
 #elif defined(__ANDROID__)
 
-	#define WEISS__OS_ANDROID
+	#define __WEISS__OS_ANDROID
 
 #elif defined(__linux__)
 
-	#define WEISS__OS_LINUX
+	#define __WEISS__OS_LINUX
+
+	// Vulkan
+	#define VK_USE_PLATFORM_XLIB_KHR
 
 	// X11 : For Linux Windows
 	#include <X11/Xos.h>
@@ -86,7 +89,7 @@
 	#elif TARGET_OS_MAC == 1
 		#define __WEISS__OS_OSX
 	#else
-		#error You Target Apple Device's OS Could Not Be Resolved
+		#error You Target Apple Device Could Not Be Resolved
 	#endif
 
 #else
@@ -135,7 +138,6 @@
 #include <cstring>
 #include <numeric>
 #include <codecvt>
-#include <variant>
 #include <fstream>
 #include <iomanip>
 #include <sstream>
@@ -146,16 +148,16 @@
 #include <functional>
 #include <immintrin.h>
 
- /*
-  * // //////////////////////////-\\\\\\\\\\\\\\\\\\\\\\\\\\ \\
-  * // |/‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\| \\
-  * // ||-------------TO THROW OR NOT TO THROW------------|| \\
-  * // |\_________________________________________________/| \\
-  * // \\\\\\\\\\\\\\\\\\\\\\\\\\-////////////////////////// \\
-  *
-  * The use of noexcept can speed up execution but exceptions are needed in debug mode
-  * The "WS_THROW" macro can be used to track exceptions even in release mode (i.e logging..)
-  */
+/*
+ * // //////////////////////////-\\\\\\\\\\\\\\\\\\\\\\\\\\ \\
+ * // |/‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\| \\
+ * // ||-------------TO THROW OR NOT TO THROW------------|| \\
+ * // |\_________________________________________________/| \\
+ * // \\\\\\\\\\\\\\\\\\\\\\\\\\-////////////////////////// \\
+ *
+ * The use of noexcept can speed up execution but exceptions are needed in debug mode
+ * The "WS_THROW" macro can be used to track exceptions even in release mode (i.e logging..)
+ */
 
 #ifdef __WEISS__DEBUG_MODE
 
@@ -171,13 +173,13 @@
 
 #define WS_NOEXCEPT noexcept(!__WEISS__THROWS)
 
-  /*
-   * // //////////////////////-\\\\\\\\\\\\\\\\\\\\\\ \\
-   * // |/‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\| \\
-   * // ||--------------HELPER MACROS--------------|| \\
-   * // |\_________________________________________/| \\
-   * // \\\\\\\\\\\\\\\\\\\\\\-////////////////////// \\
-   */
+/*
+ * // //////////////////////-\\\\\\\\\\\\\\\\\\\\\\ \\
+ * // |/‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\| \\
+ * // ||--------------HELPER MACROS--------------|| \\
+ * // |\_________________________________________/| \\
+ * // \\\\\\\\\\\\\\\\\\\\\\-////////////////////// \\
+ */
 
 #define CHECK_BIT(var, pos) ((var) & (1 << (pos)))
 

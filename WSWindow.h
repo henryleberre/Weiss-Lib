@@ -14,14 +14,24 @@ namespace WS {
     private:
 #ifdef __WEISS__OS_WINDOWS
 
-        HWND m_windowsNativeHandle = NULL;
+        HWND m_windowHandle = NULL;
 
-#endif // __WEISS__OS_WINDOWS
+#elif defined(__WEISS__OS_LINUX)
+
+        ::Display* m_pDisplayHandle;
+        ::Window   m_windowHandle;
+
+#endif
 
     public:
         Window() = delete;
 
         Window(const char* title, const uint16_t width, const uint16_t height) WS_NOEXCEPT;
+
+        void Show() WS_NOEXCEPT;
+        void Hide() WS_NOEXCEPT;
+
+        void Minimize() WS_NOEXCEPT;
 
         void Update() WS_NOEXCEPT;
 
