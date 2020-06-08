@@ -54,9 +54,36 @@ namespace WS {
 		void BeginUpdate() WS_NOEXCEPT;
 
 #ifdef __WEISS__OS_WINDOWS
+
 		std::optional<LRESULT> WinHandleEvent(const UINT msg, const WPARAM wParam, const LPARAM lParam) WS_NOEXCEPT;
+
 #elif defined(__WEISS__OS_LINUX)
+
 		void LinUpdate(::Display* pDisplayHandle) WS_NOEXCEPT;
+
+#endif
+	};
+
+	class Keyboard {
+		friend Window;
+	private:
+		bool m_downKeys[0xFE] = { false };
+
+	public:
+		Keyboard() = default;
+
+		[[nodiscard]] inline bool IsKeyDown(const char keyCode) const noexcept { return this->m_downKeys[keyCode];  }
+		[[nodiscard]] inline bool IsKeyUp  (const char keyCode) const noexcept { return !this->m_downKeys[keyCode]; }
+
+	private:
+#ifdef __WEISS__OS_WINDOWS
+
+		std::optional<LRESULT> WinHandleEvent(const UINT msg, const WPARAM wParam, const LPARAM lParam) WS_NOEXCEPT;
+
+#elif defined(__WEISS__OS_LINUX)
+
+		void LinUpdate(::Display* pDisplayHandle) WS_NOEXCEPT;
+
 #endif
 	};
 

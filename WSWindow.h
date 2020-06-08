@@ -37,7 +37,8 @@ namespace WS {
 
 #endif
 
-        Mouse m_mouse;
+        Mouse    m_mouse;
+        Keyboard m_keyboard;
 
     public:
         Window() = delete;
@@ -51,7 +52,8 @@ namespace WS {
 
         void Update() WS_NOEXCEPT;
 
-        const Mouse& GetMouse() const noexcept { return this->m_mouse; }
+        const Mouse&    GetMouse()    const noexcept { return this->m_mouse;    }
+        const Keyboard& GetKeyboard() const noexcept { return this->m_keyboard; }
 
 #ifdef __WEISS__OS_WINDOWS
 

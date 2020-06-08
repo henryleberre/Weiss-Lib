@@ -109,6 +109,9 @@ namespace WS {
 		std::optional<LRESULT> mouseOptional = this->m_mouse.WinHandleEvent(msg, wParam, lParam);
 		if (mouseOptional.has_value()) return mouseOptional.value();
 
+		std::optional<LRESULT> keyboardOptional = this->m_keyboard.WinHandleEvent(msg, wParam, lParam);
+		if (keyboardOptional.has_value()) return keyboardOptional.value();
+
 		return {  };
 	}
 
@@ -168,7 +171,9 @@ namespace WS {
 	void Window::Update() WS_NOEXCEPT
 	{
 		this->m_mouse.BeginUpdate();
+
 		this->m_mouse.LinUpdate(this->m_pDisplayHandle);
+		this->m_keyboard.LinUpdate(this->m_pDisplayHandle);
 	}
 
 	Window::~Window() WS_NOEXCEPT
