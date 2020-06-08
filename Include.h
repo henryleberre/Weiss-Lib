@@ -7,3 +7,4 @@
 #include "WSImage.h"
 #include "WSWindow.h"
 #include "WSSocket.h"
+#include "WSPeripheral.h"

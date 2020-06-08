@@ -1,6 +1,7 @@
 #pragma once
 
 #include "WSPch.h"
+#include "WSPeripheral.h"
 
 namespace WS {
 
@@ -23,6 +24,8 @@ namespace WS {
 
 #endif
 
+        Mouse m_mouse;
+
     public:
         Window() = delete;
 
@@ -34,6 +37,8 @@ namespace WS {
         void Minimize() WS_NOEXCEPT;
 
         void Update() WS_NOEXCEPT;
+
+        const Mouse& GetMouse() const noexcept { return this->m_mouse; }
 
 #ifdef __WEISS__OS_WINDOWS
 

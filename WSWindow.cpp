@@ -13,7 +13,7 @@ namespace WS {
 #endif
 
 		if (pWindow != nullptr)
-			pWindow->WinHandleMessage(msg, wParam, lParam).value_or(DefWindowProc(hwnd, msg, wParam, lParam));
+			return pWindow->WinHandleMessage(msg, wParam, lParam).value_or(DefWindowProc(hwnd, msg, wParam, lParam));
 
 		return DefWindowProc(hwnd, msg, wParam, lParam);
 	}
@@ -86,9 +86,10 @@ namespace WS {
 
 	void Window::Update() WS_NOEXCEPT
 	{
+		this->m_mouse.BeginUpdate();
+
 		MSG msg = { };
-		while (GetMessage(&msg, this->m_windowHandle, 0, 0))
-		{
+		while (PeekMessage(&msg, this->m_windowHandle, 0, 0, PM_REMOVE) > 0) {
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		}
@@ -97,15 +98,18 @@ namespace WS {
 	std::optional<LRESULT> Window::WinHandleMessage(UINT msg, WPARAM wParam, LPARAM lParam) WS_NOEXCEPT
 	{
 		switch (msg) {
+		case WM_SIZE:
+			return 0;
 		case WM_DESTROY:
 			this->~Window();
 
 			return 0;
-
-			break;
 		}
 
-		return {};
+		std::optional<LRESULT> mouseOptional = this->m_mouse.HandleEvent(msg, wParam, lParam);
+		if (mouseOptional.has_value()) return mouseOptional.value();
+
+		return {  };
 	}
 
 	Window::~Window() WS_NOEXCEPT
@@ -163,7 +167,12 @@ namespace WS {
 
 	void Window::Update() WS_NOEXCEPT
 	{
+		this->m_mouse.BeginUpdate();
 
+		::XEvent xEvent;
+		while (XCheckMaskEvent(this->m_pDisplayHandle, ExposureMask | ButtonPressMask | KeyPressMask, &xEvent)) {
+			if (this->m_mouse.HandleEvent(xEvent)) break;
+		}
 	}
 
 	Window::~Window() WS_NOEXCEPT
