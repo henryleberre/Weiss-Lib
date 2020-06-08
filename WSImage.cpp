@@ -44,8 +44,8 @@ namespace WS {
 			WS_THROW("[WS] --> [WIC] Could Not Create IWICImagingFactory");
 
         { // Convert from char* to wchar_t* & CreateDecoderFromFilename
-            const size_t length = mbstowcs(nullptr, filepath, 0);
-            wchar_t* filepathW = new wchar_t[length];
+			const size_t length = std::strlen(filepath);
+			wchar_t* filepathW = new wchar_t[length + 1u];
             mbstowcs(filepathW, filepath, length);
 
             if (WIN_FAILED(factory->CreateDecoderFromFilename(filepathW, NULL, GENERIC_READ, WICDecodeMetadataCacheOnLoad, &bitmapDecoder)))
@@ -87,8 +87,8 @@ namespace WS {
 			WS_THROW("[WS] --> [WIC] Failed To Create Output Stream");
 
 		{ // Convert from char* to wchar_t* & InitializeFromFilename
-			const size_t length = mbstowcs(nullptr, filepath, 0);
-			wchar_t* filepathW = new wchar_t[length];
+			const size_t length = std::strlen(filepath);
+			wchar_t* filepathW = new wchar_t[length + 1];
 			mbstowcs(filepathW, filepath, length);
 
 			if (WIN_FAILED(outputStream->InitializeFromFilename(filepathW, GENERIC_WRITE)))
