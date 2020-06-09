@@ -104,23 +104,31 @@ namespace WS {
 				case Button5:
 					this->m_wheelDelta -= xEvent.xbutton.y;
 					break;
+				}
 
-					break;
-				}			case ButtonRelease:
-					switch (xEvent.xbutton.button) {
-					case 1:
-						this->m_bIsLeftButtonDown = false;
-						break;
-					case 3:
-						this->m_bIsRightButtonDown = false;
-						break;
-					}
+				this->m_position = { static_cast<uint16_t>(xEvent.xmotion.x),
+									 static_cast<uint16_t>(xEvent.xmotion.y) };
 
+				break;
+			case ButtonRelease:
+				switch (xEvent.xbutton.button) {
+				case 1:
+					this->m_bIsLeftButtonDown = false;
 					break;
-				case MotionNotify:
-					this->m_position = { xEvent.xmotion.x, xEvent.xmotion.y };
+				case 3:
+					this->m_bIsRightButtonDown = false;
+					break;
+				}
 
-					break;
+				this->m_position = { static_cast<uint16_t>(xEvent.xmotion.x),
+									 static_cast<uint16_t>(xEvent.xmotion.y) };
+
+				break;
+			case MotionNotify:
+				this->m_position = { static_cast<uint16_t>(xEvent.xmotion.x),
+									 static_cast<uint16_t>(xEvent.xmotion.y) };
+
+				break;
 			}
 		}
 	}
@@ -153,10 +161,14 @@ namespace WS {
 	void Keyboard::LinUpdate(::Display* pDisplayHandle) WS_NOEXCEPT
 	{
 		::XEvent xEvent;
-		while (XCheckMaskEvent(pDisplayHandle, __WEISS__XLIB_MOUSE_MASKS, &xEvent)) {
+		while (XCheckMaskEvent(pDisplayHandle, __WEISS__XLIB_KEYBOARD_MASKS, &xEvent)) {
+			const char key = std::toupper(XLookupKeysym(&xEvent.xkey, 0));
 			switch (xEvent.type) {
 			case KeyPress:
-				std::cout << "KEYPRESS\n";
+				this->m_downKeys[key] = true;
+				break;
+			case KeyRelease:
+				this->m_downKeys[key] = false;
 				break;
 			}
 		}
