@@ -2,12 +2,12 @@
 
 #include "WSPch.h"
 #include "WSMath.h"
+#include "WSBitLogic.h"
 
 namespace WS {
 
 	/*
 	 * The "Image" class represents a 4 byte per pixel image (r, g, b, a)
-	 * It uses the native WIC api on windows but uses libpng on other platforms
 	 */
 	class Image {
 	private:

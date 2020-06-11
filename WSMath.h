@@ -234,7 +234,6 @@ namespace WS {
 
 	// Should be used for quick SIMD Enabled vector math
 	// Can be converted into RawVectorComponents<_T, _D>
-
 	// _T : the type of every vector component
 	template <typename _T = int>
 	struct Vector

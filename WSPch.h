@@ -146,7 +146,12 @@
 #include <exception>
 #include <algorithm>
 #include <functional>
-#include <immintrin.h>
+
+#ifndef __WEISS__DISABLE_SIMD
+
+	#include <immintrin.h>
+
+#endif // #ifndef __WEISS__DISABLE_SIMD
 
 /*
  * // //////////////////////////-\\\\\\\\\\\\\\\\\\\\\\\\\\ \\
