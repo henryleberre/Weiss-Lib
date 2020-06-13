@@ -82,6 +82,7 @@ namespace WS {
 					WS_THROW("[WS] Your PNG Filter Method Is Not Supported");
 
 				std::cout << "Width: " << (int)this->m_width << '\n';
+				std::cout << "Height: " << (int)this->m_height << '\n';
 				std::cout << "Filter: " << (int)filterMethod << '\n';
 				std::cout << "Color Type: " << (int)colorType << '\n';
 				std::cout << "Bit Depth: " << (int)bitDepth << '\n';
@@ -153,8 +154,9 @@ namespace WS {
 		do {
 			const uint8_t inflateBlockHeader = *(zlibRawCompressedData + zlibRawCompressedDataOffset);
 
-			inflateBFINAL = (inflateBlockHeader & 0b10000000) >> 7u;
-			const uint8_t inflateBTYPE = (inflateBlockHeader & 0b01100000) >> 5u;
+			inflateBFINAL = inflateBlockHeader & 0b1;
+
+			const uint8_t inflateBTYPE = (inflateBlockHeader & 0b110) >> 1u;
 
 			switch (inflateBTYPE) {
 			case 0b00: // No Compression
@@ -168,7 +170,7 @@ namespace WS {
 				if (temp != inflateLEN)
 					WS_THROW("[WS] One's complement Check On LEN & NLEN Failed!");
 
-				const auto& pair = std::make_pair(inflateLEN, (uint8_t*)zlibRawCompressedDataOffset + 1u * sizeof(uint8_t) + 2u * sizeof(uint16_t));
+				const auto& pair = std::make_pair(inflateLEN, (uint8_t*)(zlibRawCompressedData + zlibRawCompressedDataOffset + 1u * sizeof(uint8_t) + 2u * sizeof(uint16_t)));
 				inflateUncompressedDataPtrs.push_back(pair);
 				
 				zlibRawCompressedDataOffset        += 1u * sizeof(uint8_t) + 2u * sizeof(uint16_t) + inflateLEN;
@@ -192,8 +194,12 @@ namespace WS {
 		uint8_t* uncompressedIdatData = new uint8_t[totalInflateUncompressedDataLength]; // Dynamic #2
 		{
 			size_t offset = 0u;
-			for (auto& lenAndPtr : inflateUncompressedDataPtrs) {
-				std::memcpy(uncompressedIdatData + offset, lenAndPtr.second, lenAndPtr.first);
+			for (const std::pair<uint16_t, uint8_t*>& lenAndPtr : inflateUncompressedDataPtrs) {
+				void* dest = uncompressedIdatData + offset;
+				void* src  = (void*)lenAndPtr.second;
+
+				std::memcpy(dest, src, lenAndPtr.first);
+
 				offset += lenAndPtr.first;
 			}
 		}
@@ -202,7 +208,7 @@ namespace WS {
 		// Create Final Image Buffer
 		this->m_pBuff = std::make_unique<Coloru8[]>(this->m_nPixels);
 		const size_t channelCount  = (colorType == 0 ? 1u : (colorType == 2 ? 3 : (colorType == 3 ? 4 : (colorType == 4 ? 2 : 4u))));
-		const size_t bytesPerPixel = bitDepth * channelCount;
+		const size_t bytesPerPixel = bitDepth / 8u * channelCount;
 
 		std::cout << "bpp: " << bytesPerPixel << '\n';
 
@@ -210,8 +216,12 @@ namespace WS {
 		size_t i = 0u;
 		for (uint16_t y = 0; y < this->m_height; y++) {
 			const uint8_t scanlineFilterType = uncompressedIdatData[uncompressedDataOffset++];
+
+			std::cout << (int)scanlineFilterType << '\n';
+
 			for (uint16_t x = 0; x < this->m_width; x++) {
-				Coloru8 pixelColor = *(uint32_t*)uncompressedIdatData[uncompressedDataOffset];
+				Coloru8 pixelColor = *(uint32_t*)(uncompressedIdatData + uncompressedDataOffset);
+
 				// TODO:: HANDLE NON 8 BIT COLORS
 
 				switch (scanlineFilterType) {
@@ -228,6 +238,13 @@ namespace WS {
 					
 					break;
 				case 2: // Up
+					if (y == 0) break;
+
+					{
+						const Coloru8 topPixel = this->m_pBuff[i - this->m_width];
+					
+						pixelColor += topPixel;
+					}
 					break;
 				case 3: // Average
 					break;
@@ -237,7 +254,7 @@ namespace WS {
 					WS_THROW("[WS] Your scanline filter type isn't supported");
 				}
 
-				this->m_pBuff[i] = pixelColor;
+				this->m_pBuff[i++] = pixelColor;
 
 				uncompressedDataOffset += bytesPerPixel;
 			}
