@@ -29,6 +29,7 @@
 	#include <windowsx.h>
 
 	// Windows Networking Includes
+	#include <ws2bth.h>
 	#include <winhttp.h>
 	#include <winsock2.h>
 	#include <ws2tcpip.h>

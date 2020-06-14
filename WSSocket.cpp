@@ -38,7 +38,7 @@ namespace WS {
 	}
 
 	template <SocketProtocol _PROTOCOL>
-	ClientSocket<_PROTOCOL>::~ClientTCPSocket() WS_NOEXCEPT
+	ClientSocket<_PROTOCOL>::~ClientSocket() WS_NOEXCEPT
 	{
 		this->Disconnect();
 	}
