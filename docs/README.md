@@ -2,12 +2,12 @@
 
 ## For The PNG Encoder/Decoder
 
-+ [libpng-png-1.2.pdf](PNG Specification) from [http://www.libpng.org/pub/png/](libpng)
-+ [DEFLATE-rfc1951.pdf](Deflate Specification)
-+ [ZLIB-rfc1950.pdf](ZLIB Specification)
++ [PNG Specification](libpng-png-1.2.pdf) from [libpng](http://www.libpng.org/pub/png/)
++ [Deflate Specification](DEFLATE-rfc1951.pdf)
++ [ZLIB Specification](ZLIB-rfc1950.pdf)
 
 ## Graphics APIs
 
-+ [vkspec.pdf](Vulkan Specification) from [The Khronos Group](https://www.khronos.org/)
++ [Vulkan Specification](vkspec.pdf) from [The Khronos Group](https://www.khronos.org/)
 
 Thanks to all of the authors and maintainers of these open file formats!
