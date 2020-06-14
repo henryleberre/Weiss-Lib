@@ -73,6 +73,12 @@
 	// Vulkan
 	#define VK_USE_PLATFORM_XLIB_KHR
 
+	// Sockets
+	#include <netdb.h>
+	#include <sys/types.h> 
+	#include <sys/socket.h>
+	#include <netinet/in.h>
+
 	// X11 : For Linux Windows
 	#include <X11/Xos.h>
 	#include <X11/Xlib.h>
@@ -167,11 +173,19 @@
 #ifdef __WEISS__DEBUG_MODE
 
 	#define __WEISS__THROWS true
-	#define WS_THROW(errorMsg) (throw std::runtime_error(errorMsg))
 
 #else
 
 	#define __WEISS__THROWS false
+
+#endif
+
+#ifdef __WEISS__THROWS == true
+
+	#define WS_THROW(errorMsg) (throw std::runtime_error(errorMsg))
+
+#else
+
 	#define WS_THROW(errorMsg) {}
 
 #endif
