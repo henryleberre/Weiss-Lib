@@ -10,9 +10,9 @@ namespace WS {
 		sockAddrIn.sin_family      = AF_INET;
 		sockAddrIn.sin_port        = htons(port);
 																				// TCP       // UDP       // BTH
-		constexpr const int addressFamily = WS_SOCKET_SELECT_VALUE_PER_PROTOCOL(AF_INET,     AF_INET,     AF_BTH);
-		constexpr const int type          = WS_SOCKET_SELECT_VALUE_PER_PROTOCOL(SOCK_STREAM, SOCK_DGRAM,  SOCK_STREAM);
-		constexpr const int protocol      = WS_SOCKET_SELECT_VALUE_PER_PROTOCOL(IPPROTO_TCP, IPPROTO_UDP, BTHPROTO_RFCOMM);
+		constexpr const int addressFamily = WS_SOCKET_SELECT_VALUE_PER_PROTOCOL(_PROTOCOL, AF_INET,     AF_INET,     AF_BLUETOOTH);
+		constexpr const int type          = WS_SOCKET_SELECT_VALUE_PER_PROTOCOL(_PROTOCOL, SOCK_STREAM, SOCK_DGRAM,  SOCK_STREAM);
+		constexpr const int protocol      = WS_SOCKET_SELECT_VALUE_PER_PROTOCOL(_PROTOCOL, IPPROTO_TCP, IPPROTO_UDP, 0); // BTHPROTO_RFCOMM
 
 		this->m_socket = socket(addressFamily, type, protocol);
 

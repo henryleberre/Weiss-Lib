@@ -16,7 +16,7 @@
 
 #endif
 
-#define WS_SOCKET_SELECT_VALUE_PER_PROTOCOL(tcpValue, udpValue, bthValue) (std::is_same<SocketProtocol::TCP, _PROTOCOL>::value ? tcpValue : (std::is_same<SocketProtocol::UDP, _PROTOCOL>::value ? udpValue : (std::is_same<SocketProtocol::BTH, _PROTOCOL>::value ? bthValue : 0)))
+#define WS_SOCKET_SELECT_VALUE_PER_PROTOCOL(_PROTOCOL, tcpValue, udpValue, bthValue) (SocketProtocol::TCP == _PROTOCOL ? tcpValue : (SocketProtocol::UDP == _PROTOCOL ? udpValue : (SocketProtocol::BTH == _PROTOCOL ? bthValue : 0)))
 
 namespace WS {
 

@@ -76,9 +76,14 @@
 
 	// Sockets
 	#include <netdb.h>
-	#include <sys/types.h> 
+	#include <sys/types.h>
 	#include <sys/socket.h>
 	#include <netinet/in.h>
+
+	// Bluetooth
+	#include <bluetooth/bluetooth.h>
+	#include <bluetooth/rfcomm.h>
+	#include <unistd.h>
 
 	// X11 : For Linux Windows
 	#include <X11/Xos.h>
