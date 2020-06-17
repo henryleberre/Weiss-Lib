@@ -1,14 +1,7 @@
-# Weiss-Lib
+# Weiss
 
-> Weiss-Lib is a collection of cross-platform header and source files used the Weiss rendering engine.
+![Weiss' Logo](Branding/logo.png)
 
-# Setup / Building Instructions
+> Weiss is a computer graphics, audio & networking engine built with c++17 that strives to make the development of 2D & 3D interactive applications simpler and faster
 
-Please refer to the [build/README.md](build/README.md) instructions.
-
-# Contents
-
-They contain:
-+ A **Templated SIMD Math Library** that uses SIMD Extensions when available
-+ An **Image Reading/Writing Library** with a custom PNG encoder/decoder
-+ A **Windowing Library** that uses win32 api calls on windows and X11 on linux
+For Informations about Weiss' contents & Building Instructions, please refer to [docs/README.md](docs/README.md).
