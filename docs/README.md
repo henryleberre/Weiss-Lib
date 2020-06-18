@@ -29,8 +29,8 @@
 
 + Run ```sudo apt-get update```
 + Run ```sudo apt-get install git g++ libx11-dev libbluetooth-dev cmake make```
-⋅⋅⋅```libx11-dev``` gives you the x header files
-⋅⋅⋅```libbluetooth-dev``` gives you the bluetooth linux header files
+  * ```libx11-dev``` gives you the x header files
+  * ```libbluetooth-dev``` gives you the bluetooth linux header files
 + Run ```git clone https://github.com/PolarToCartesian/Weiss-lib``` to clone the repository in your desired directory
 + Run ```cd Weiss-lib``` to navigate the cloned repository
 + Run ```cmake .``` to generate the build files
