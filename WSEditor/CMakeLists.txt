@@ -1,7 +1,7 @@
 # Create The Editor Project That Includes WeissEngine
 
-file(GLOB_RECURSE WS_EDITOR_H_CPP_FILES "${CMAKE_CURRENT_SOURCE_DIR}/editor/*.h"
-                                        "${CMAKE_CURRENT_SOURCE_DIR}/editor/*.cpp")
+file(GLOB_RECURSE WS_EDITOR_H_CPP_FILES "${CMAKE_CURRENT_SOURCE_DIR}/WSEditor/*.h"
+                                        "${CMAKE_CURRENT_SOURCE_DIR}/WSEditor/*.cpp")
 
 ADD_EXECUTABLE(WeissEditor "${WS_EDITOR_H_CPP_FILES}")
 

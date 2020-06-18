@@ -1,7 +1,7 @@
 # Create A Sample Project That Includes WeissEngine
 
-file(GLOB_RECURSE WS_SAMPLE_H_CPP_FILES "${CMAKE_CURRENT_SOURCE_DIR}/sample/*.h"
-                                        "${CMAKE_CURRENT_SOURCE_DIR}/sample/*.cpp")
+file(GLOB_RECURSE WS_SAMPLE_H_CPP_FILES "${CMAKE_CURRENT_SOURCE_DIR}/WSSample/*.h"
+                                        "${CMAKE_CURRENT_SOURCE_DIR}/WSSample/*.cpp")
 
 ADD_EXECUTABLE(WeissSample "${WS_SAMPLE_H_CPP_FILES}")
 

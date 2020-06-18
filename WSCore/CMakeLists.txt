@@ -2,7 +2,7 @@
 # because it prepares it
 
 # Find Weiss Engine .h && .cpp Files
-file(GLOB_RECURSE WS_ENGINE_H_CPP_FILES "${CMAKE_CURRENT_SOURCE_DIR}/core/*.h" "${CMAKE_CURRENT_SOURCE_DIR}/core/*.cpp")
+file(GLOB_RECURSE WS_ENGINE_H_CPP_FILES "${CMAKE_CURRENT_SOURCE_DIR}/WSCore/*.h" "${CMAKE_CURRENT_SOURCE_DIR}/WSCore/*.cpp")
 
 # Create The Weiss Static Library Target
 ADD_LIBRARY(WeissEngine STATIC "${WS_ENGINE_H_CPP_FILES}")

@@ -4,6 +4,10 @@
 #include "../math/WSVector.h"
 #include "../misc/WSBitLogic.h"
 
+#define WS_PNG_IHDR_CHUNK_NAME_RAW 0x52444849
+#define WS_PNG_IDAT_CHUNK_NAME_RAW 0x54414449
+#define WS_PNG_IEND_CHUNK_NAME_RAW 0x444E4549
+
 namespace WS {
 
 	/*

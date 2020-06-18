@@ -1,7 +1,7 @@
-#include <core/WSInclude.h>
+#include <WSCore/WSInclude.h>
 
 int WS::EntryPoint(int argc, char** argv) {
-    WS::Window window("test", 1920, 1080);
+    WS::Image test("Branding/logo.png");
 
     std::cin.get();
     return 0;

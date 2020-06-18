@@ -17,6 +17,6 @@ include(GNUInstallDirs)
 FIND_PACKAGE(Vulkan REQUIRED FATAL_ERROR)
 
 # Include All CMakeLists.txt Files
-INCLUDE("${CMAKE_CURRENT_SOURCE_DIR}/core/CMakeLists.txt")   # Weiss' Core Engine Static Library
-INCLUDE("${CMAKE_CURRENT_SOURCE_DIR}/sample/CMakeLists.txt") # Sample Test   Application
-INCLUDE("${CMAKE_CURRENT_SOURCE_DIR}/editor/CMakeLists.txt") # Weiss' Editor Application
+INCLUDE("${CMAKE_CURRENT_SOURCE_DIR}/WSCore/CMakeLists.txt")   # Weiss' Core Engine Static Library
+INCLUDE("${CMAKE_CURRENT_SOURCE_DIR}/WSSample/CMakeLists.txt") # Sample Test   Application
+INCLUDE("${CMAKE_CURRENT_SOURCE_DIR}/WSEditor/CMakeLists.txt") # Weiss' Editor Application
