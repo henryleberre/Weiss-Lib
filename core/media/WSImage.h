@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../misc/WSPch.h"
-#include "../math/WSMath.h"
+#include "../math/WSVector.h"
 #include "../misc/WSBitLogic.h"
 
 namespace WS {

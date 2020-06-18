@@ -4,7 +4,9 @@
 #include "misc/WSMain.h"
 #include "misc/WSBitLogic.h"
 
-#include "math/WSMath.h"
+#include "math/WSSimd.h"
+#include "math/WSVector.h"
+#include "math/WSMatrix.h"
 
 #include "media/WSAudio.h"
 #include "media/WSImage.h"
