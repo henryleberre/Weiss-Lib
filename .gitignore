@@ -1,1 +1,13 @@
+.vs/
 .vscode/
+*.filters
+*.sln
+*.cmake
+CMakeCache.txt
+*.vcxproj
+x64/
+*.dir/
+Release/
+Debug/
+Makefile
+CMakeFiles/

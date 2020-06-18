@@ -1,6 +1,6 @@
 #pragma once
 
-#include "WSPch.h"
+#include "../misc/WSPch.h"
 
 namespace WS {
 

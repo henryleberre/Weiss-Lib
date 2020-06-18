@@ -1,6 +1,6 @@
 #pragma once
 
-#include "WSPch.h"
+#include "../misc/WSPch.h"
 #include "WSPeripheral.h"
 
 #ifdef __WEISS__OS_LINUX

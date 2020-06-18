@@ -1,7 +1,7 @@
 #pragma once
 
-#include "WSPch.h"
-#include "WSMath.h"
+#include "../misc/WSPch.h"
+#include "../math/WSMath.h"
 
 #ifdef __WEISS__OS_LINUX
 

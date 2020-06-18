@@ -1,8 +1,8 @@
 #pragma once
 
-#include "WSPch.h"
-#include "WSMath.h"
-#include "WSBitLogic.h"
+#include "../misc/WSPch.h"
+#include "../math/WSMath.h"
+#include "../misc/WSBitLogic.h"
 
 namespace WS {
 
