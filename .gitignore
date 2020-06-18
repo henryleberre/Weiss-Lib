@@ -11,3 +11,4 @@ Release/
 Debug/
 Makefile
 CMakeFiles/
+CMakeCache.txt
