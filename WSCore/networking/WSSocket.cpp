@@ -8,7 +8,7 @@ namespace WS {
 		sockaddr_in sockAddrIn;
 		sockAddrIn.sin_addr.s_addr = inet_addr(host);
 		sockAddrIn.sin_family      = AF_INET;
-		sockAddrIn.sin_port        = htons(port);
+		sockAddrIn.sin_port        = port;
 																				// TCP       // UDP       // BTH
 		constexpr const int addressFamily = WS_SOCKET_SELECT_VALUE_PER_PROTOCOL(_PROTOCOL, AF_INET,     AF_INET,     AF_BLUETOOTH);
 		constexpr const int type          = WS_SOCKET_SELECT_VALUE_PER_PROTOCOL(_PROTOCOL, SOCK_STREAM, SOCK_DGRAM,  SOCK_STREAM);

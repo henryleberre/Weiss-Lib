@@ -19,4 +19,3 @@ FIND_PACKAGE(Vulkan REQUIRED FATAL_ERROR)
 # Include All CMakeLists.txt Files
 INCLUDE("${CMAKE_CURRENT_SOURCE_DIR}/WSCore/CMakeLists.txt")   # Weiss' Core Engine Static Library
 INCLUDE("${CMAKE_CURRENT_SOURCE_DIR}/WSSample/CMakeLists.txt") # Sample Test   Application
-INCLUDE("${CMAKE_CURRENT_SOURCE_DIR}/WSEditor/CMakeLists.txt") # Weiss' Editor Application

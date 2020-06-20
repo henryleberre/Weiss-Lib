@@ -12,3 +12,7 @@ Debug/
 Makefile
 CMakeFiles/
 CMakeCache.txt
+*.user
+*.a
+*.out
+*.swp
