@@ -37,7 +37,18 @@ namespace WS {
 	};
 
 	template <SocketProtocol _PROTOCOL>
-	class ClientSocket {
+	class SocketBase {
+	protected:
+		WS_SOCKET_TYPE m_socket;
+	
+	public:
+		void Disconnect() WS_NOEXCEPT;
+
+		~SocketBase() WS_NOEXCEPT;
+	};
+
+	template <SocketProtocol _PROTOCOL>
+	class ClientSocket : public SocketBase<_PROTOCOL> {
 	private:
 		WS_SOCKET_TYPE m_socket;
 
@@ -45,23 +56,15 @@ namespace WS {
 		ClientSocket() = default;
 
 		bool Connect(const char* host, const uint16_t port) WS_NOEXCEPT;
-
-		void Disconnect() WS_NOEXCEPT;
-
-		~ClientSocket() WS_NOEXCEPT;
 	};
 
 	template <SocketProtocol _PROTOCOL>
-	class ServerSocket {
+	class ServerSocket : public SocketBase<_PROTOCOL> {
 	private:
 		WS_SOCKET_TYPE m_socket;
 	
 	public:
 		ServerSocket() = default;
-
-		void Disconnect() WS_NOEXCEPT;
-
-		~ServerSocket() WS_NOEXCEPT;
 	};
 
 }; // WS
