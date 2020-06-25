@@ -55,8 +55,11 @@ namespace WS {
 				NULL, NULL, hInstance, NULL
 			);
 
-			if (this->m_windowHandle == NULL)
+			if (this->m_windowHandle == NULL) {
 				WS_THROW("[WS] --> [WIN 32] Window Creation Failed");
+			} else {
+				this->m_bIsRunning = true;
+			}
 		}
 
 		// Step 3 : Show Window
@@ -78,6 +81,20 @@ namespace WS {
 
 	void Window::Show() WS_NOEXCEPT { ShowWindow(this->m_windowHandle, SW_SHOWNORMAL); }
 	void Window::Hide() WS_NOEXCEPT { ShowWindow(this->m_windowHandle, SW_HIDE); }
+
+	void Window::Close() WS_NOEXCEPT {
+#ifdef __WEISS__DEBUG_MODE
+
+		assert(this->m_windowHandle != NULL);
+
+#endif // __WEISS__DEBUG_MODE
+
+		if (WIN_FAILED(CloseWindow(this->m_windowHandle)))
+			WS_THROW("[WS] --> [WIN 32] Failed To Close Window");
+
+		this->m_windowHandle = NULL;
+		this->m_bIsRunning   = false;
+	}
 
 	void Window::Minimize() WS_NOEXCEPT
 	{
@@ -101,7 +118,7 @@ namespace WS {
 		case WM_SIZE:
 			return 0;
 		case WM_DESTROY:
-			this->~Window();
+			this->Close();
 
 			return 0;
 		}
@@ -113,20 +130,6 @@ namespace WS {
 		if (keyboardOptional.has_value()) return keyboardOptional.value();
 
 		return {  };
-	}
-
-	Window::~Window() WS_NOEXCEPT
-	{
-#ifdef __WEISS__DEBUG_MODE
-
-		assert(this->m_windowHandle != NULL);
-
-#endif // __WEISS__DEBUG_MODE
-
-		if (WIN_FAILED(CloseWindow(this->m_windowHandle)))
-			WS_THROW("[WS] --> [WIN 32] Failed To Close Window");
-
-		this->m_windowHandle = NULL;
 	}
 
 #elif defined(__WEISS__OS_LINUX)
@@ -148,6 +151,8 @@ namespace WS {
 		::XSelectInput(this->m_pDisplayHandle, this->m_windowHandle, __WEISS__XLIB_ALL_MASKS);
 
 		this->Show();
+
+		this->m_bIsRunning = true;
 	}
 
 	void Window::Show() WS_NOEXCEPT
@@ -160,6 +165,16 @@ namespace WS {
 	{
 		::XUnmapWindow(this->m_pDisplayHandle, this->m_windowHandle);
 		::XFlush(this->m_pDisplayHandle);
+	}
+
+	void Window::Close() WS_NOEXCEPT
+	{
+		// Destroy Window & Close Display
+		::XDestroyWindow(this->m_pDisplayHandle, this->m_windowHandle);
+		::XCloseDisplay(this->m_pDisplayHandle);
+
+		this->m_pDisplayHandle = nullptr;
+		this->m_bIsRunning     = false;
 	}
 
 	void Window::Minimize() WS_NOEXCEPT
@@ -176,15 +191,11 @@ namespace WS {
 		this->m_keyboard.LinUpdate(this->m_pDisplayHandle);
 	}
 
+#endif
+
 	Window::~Window() WS_NOEXCEPT
 	{
-		// Destroy Window & Close Display
-		::XDestroyWindow(this->m_pDisplayHandle, this->m_windowHandle);
-		::XCloseDisplay(this->m_pDisplayHandle);
-
-		this->m_pDisplayHandle = nullptr;
+		this->Close();
 	}
-
-#endif
 
 }; // WS

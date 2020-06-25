@@ -4,9 +4,9 @@
 #include "../math/WSVector.h"
 #include "../misc/WSBitLogic.h"
 
-#define WS_PNG_IHDR_CHUNK_NAME_RAW 0x52444849
-#define WS_PNG_IDAT_CHUNK_NAME_RAW 0x54414449
-#define WS_PNG_IEND_CHUNK_NAME_RAW 0x444E4549
+#define WS_PNG_IHDR_CHUNK_NAME_RAW 0x49484452
+#define WS_PNG_IDAT_CHUNK_NAME_RAW 0x49444154
+#define WS_PNG_IEND_CHUNK_NAME_RAW 0x49454E44
 
 namespace WS {
 
@@ -17,8 +17,8 @@ namespace WS {
 	private:
 		std::unique_ptr<WS::Coloru8[]> m_pBuff;
 
-		uint16_t m_width   = 0, m_height = 0;
-		uint32_t m_nPixels = 0;
+		uint32_t m_width   = 0, m_height = 0;
+		uint64_t m_nPixels = 0;
 
 	public:
 		Image() = default;
@@ -28,13 +28,13 @@ namespace WS {
 
 		Image(const char* filepath) WS_NOEXCEPT;
 
-		Image(const uint16_t width, const uint16_t height, const Coloru8& fillColor = { 0, 0, 0, 255 });
+		Image(const uint32_t width, const uint32_t height, const Coloru8& fillColor = { 0, 0, 0, 255 });
 
-		[[nodiscard]] inline uint16_t GetWidth()      const noexcept { return this->m_width;   }
-		[[nodiscard]] inline uint16_t GetHeight()     const noexcept { return this->m_height;  }
-		[[nodiscard]] inline uint16_t GetPixelCount() const noexcept { return this->m_nPixels; }
+		[[nodiscard]] inline uint32_t GetWidth()      const noexcept { return this->m_width;   }
+		[[nodiscard]] inline uint32_t GetHeight()     const noexcept { return this->m_height;  }
+		[[nodiscard]] inline uint64_t GetPixelCount() const noexcept { return this->m_nPixels; }
 
-		inline void SetPixelColor(const uint16_t x, const uint16_t y, const WS::Coloru8& color) WS_NOEXCEPT
+		inline void SetPixelColor(const uint32_t x, const uint32_t y, const WS::Coloru8& color) WS_NOEXCEPT
 		{
 #ifdef __WEISS__DEBUG_MODE
 		
@@ -45,7 +45,7 @@ namespace WS {
 			this->m_pBuff[y * this->m_width + x] = color;
 		}
 
-		[[nodiscard]] inline WS::Coloru8 SamplePixelColor(const uint16_t x, const uint16_t y) WS_NOEXCEPT
+		[[nodiscard]] inline WS::Coloru8 SamplePixelColor(const uint32_t x, const uint32_t y) WS_NOEXCEPT
 		{
 #ifdef __WEISS__DEBUG_MODE
 		

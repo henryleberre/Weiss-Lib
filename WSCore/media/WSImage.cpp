@@ -17,7 +17,7 @@ namespace WS {
 		std::memcpy(this->m_pBuff.get(), other.m_pBuff.get(), bufferSize);
 	}
 
-	Image::Image(const uint16_t width, const uint16_t height, const Coloru8& fillColor)
+	Image::Image(const uint32_t width, const uint32_t height, const Coloru8& fillColor)
 		: m_width(width), m_height(height), m_nPixels(width * height)
 	{
 #ifdef __WEISS__DEBUG_MODE
@@ -71,12 +71,16 @@ namespace WS {
 
 			do {
 				 // Read Chunk Metadata
-				const uint32_t chunkDataLength = SwapEndian(*(uint32_t*)(filePosition));
-				const uint32_t chunkName       = *(uint32_t*)(filePosition + sizeof(uint32_t));
+				const uint32_t chunkDataLength = WS::FromBigEndian(*(uint32_t*)(filePosition));
+				const uint32_t chunkName       = WS::FromLittleEndian(*(uint32_t*)(filePosition + 4u));
 
 				// Parse Chunks
 				switch (chunkName) {
 				case WS_PNG_IHDR_CHUNK_NAME_RAW:
+					this->m_width  = WS::FromBigEndian(*(uint32_t*)(filePosition + 8u));
+					this->m_height = WS::FromBigEndian(*(uint32_t*)(filePosition + 12u));
+
+					std::cout << this->m_width << " " << this->m_height << '\n';
 					break;
 				case WS_PNG_IDAT_CHUNK_NAME_RAW:
 					break;

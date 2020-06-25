@@ -40,20 +40,24 @@ namespace WS {
         Mouse    m_mouse;
         Keyboard m_keyboard;
 
+        bool m_bIsRunning = false;
+
     public:
         Window() = delete;
 
         Window(const char* title, const uint16_t width, const uint16_t height) WS_NOEXCEPT;
 
-        void Show() WS_NOEXCEPT;
-        void Hide() WS_NOEXCEPT;
+        void Show()  WS_NOEXCEPT;
+        void Hide()  WS_NOEXCEPT;
+        void Close() WS_NOEXCEPT;
 
         void Minimize() WS_NOEXCEPT;
 
         void Update() WS_NOEXCEPT;
 
-        const Mouse&    GetMouse()    const noexcept { return this->m_mouse;    }
-        const Keyboard& GetKeyboard() const noexcept { return this->m_keyboard; }
+        inline const bool      IsRunning()   const noexcept { return this->m_bIsRunning; }
+        inline const Mouse&    GetMouse()    const noexcept { return this->m_mouse;      }
+        inline const Keyboard& GetKeyboard() const noexcept { return this->m_keyboard;   }
 
 #ifdef __WEISS__OS_WINDOWS
 
