@@ -16,7 +16,9 @@
 
 #endif
 
-#define WS_SOCKET_SELECT_VALUE_PER_PROTOCOL(_PROTOCOL, tcpValue, udpValue, bthValue) (SocketProtocol::TCP == _PROTOCOL ? tcpValue : (SocketProtocol::UDP == _PROTOCOL ? udpValue : (SocketProtocol::BTH == _PROTOCOL ? bthValue : 0)))
+#define WS_SOCKET_FAILED(code) (code < 0)
+
+#define WS_SOCKET_SELECT_VALUE_PER_PROTOCOL(_PROTOCOL, tcpValue, udpValue) (SocketProtocol::TCP == _PROTOCOL ? tcpValue : (SocketProtocol::UDP == _PROTOCOL ? udpValue : 0))
 
 namespace WS {
 
@@ -32,8 +34,7 @@ namespace WS {
 
 	enum class SocketProtocol {
 		TCP, // TCP
-		UDP, // UDP
-		BTH  // Bluetooth
+		UDP  // UDP
 	};
 
 	template <SocketProtocol _PROTOCOL>
@@ -55,7 +56,7 @@ namespace WS {
 	public:
 		ClientSocket() = default;
 
-		bool Connect(const char* host, const uint16_t port) WS_NOEXCEPT;
+		[[nodiscard]] bool Connect(const char* host, const uint16_t port) const WS_NOEXCEPT;
 	};
 
 	template <SocketProtocol _PROTOCOL>
@@ -65,6 +66,10 @@ namespace WS {
 	
 	public:
 		ServerSocket() = default;
+
+		[[nodiscard]] bool Bind(const uint16_t port) const WS_NOEXCEPT;
+
+		[[nodiscard]] bool Listen() const WS_NOEXCEPT;
 	};
 
 }; // WS
