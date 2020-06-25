@@ -134,6 +134,7 @@
  * // \\\\\\\\\\\\\\\\\\\\\\\\\\\\--//////////////////////////// \\
  */
 
+#include <bit>
 #include <map>
 #include <list>
 #include <array>
