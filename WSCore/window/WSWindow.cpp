@@ -103,7 +103,7 @@ namespace WS {
 
 	void Window::Update() WS_NOEXCEPT
 	{
-		this->m_mouse.BeginUpdate();
+		this->m_mouse.PrepareForUpdate();
 
 		MSG msg = { };
 		while (PeekMessage(&msg, this->m_windowHandle, 0, 0, PM_REMOVE) > 0) {
@@ -115,10 +115,69 @@ namespace WS {
 	std::optional<LRESULT> Window::WinHandleMessage(UINT msg, WPARAM wParam, LPARAM lParam) WS_NOEXCEPT
 	{
 		switch (msg) {
+		// Window Updates
 		case WM_SIZE:
 			return 0;
 		case WM_DESTROY:
 			this->Close();
+
+			return 0;
+		// Mouse Events
+		case WM_INPUT:
+		{
+			UINT size = 0;
+
+			if (!GetRawInputData(reinterpret_cast<HRAWINPUT>(lParam), RID_INPUT, nullptr, &size, sizeof(RAWINPUTHEADER)))
+			{
+				std::vector<char> rawBuffer(size);
+
+				if (GetRawInputData(reinterpret_cast<HRAWINPUT>(lParam), RID_INPUT, rawBuffer.data(), &size, sizeof(RAWINPUTHEADER)) == size)
+				{
+					const RAWINPUT& ri = reinterpret_cast<const RAWINPUT&>(*rawBuffer.data());
+
+					if (ri.header.dwType == RIM_TYPEMOUSE && (ri.data.mouse.lLastX != 0 || ri.data.mouse.lLastY != 0))
+					{
+						this->m_mouse.m_deltaPosition.x += static_cast<int16_t>(ri.data.mouse.lLastX);
+						this->m_mouse.m_deltaPosition.y += static_cast<int16_t>(ri.data.mouse.lLastY);
+					}
+				}
+			}
+
+			return 0;
+		}
+		case WM_MOUSEMOVE:
+			this->m_mouse.m_position = { static_cast<uint16_t>(GET_X_LPARAM(lParam)),
+								 		 static_cast<uint16_t>(GET_Y_LPARAM(lParam)) };
+
+			return 0;
+		case WM_LBUTTONDOWN:
+			this->m_mouse.m_bIsLeftButtonDown = true;
+
+			return 0;
+		case WM_LBUTTONUP:
+			this->m_mouse.m_bIsLeftButtonDown = false;
+
+			return 0;
+		case WM_RBUTTONDOWN:
+			this->m_mouse.m_bIsRightButtonDown = true;
+
+			return 0;
+		case WM_RBUTTONUP:
+			this->m_mouse.m_bIsRightButtonDown = false;
+
+			return 0;
+		case WM_MOUSEWHEEL:
+			this->m_mouse.m_wheelDelta += GET_WHEEL_DELTA_WPARAM(wParam);
+
+			return 0;
+		// Keyboard Events
+		case WM_KEYDOWN:
+			this->m_keyboard.m_downKeys[static_cast<uint8_t>(wParam)] = true;
+
+			return 0;
+
+		case WM_KEYUP:
+			this->m_keyboard.m_downKeys[static_cast<uint8_t>(wParam)] = false;
 
 			return 0;
 		}
@@ -134,7 +193,7 @@ namespace WS {
 
 #elif defined(__WEISS__OS_LINUX)
 
-	Window::Window(const char* title, const uint16_t width, const uint16_t height) WS_NOEXCEPT
+	 Window::Window(const char* title, const uint16_t width, const uint16_t height) WS_NOEXCEPT
 	{
 		// Fetch Display
 		this->m_pDisplayHandle = ::XOpenDisplay(0);
@@ -144,11 +203,19 @@ namespace WS {
 												     0, 0, width, height, 0,
 													 BlackPixel(this->m_pDisplayHandle, 0), WhitePixel(this->m_pDisplayHandle, 0));
 
+		// Receive WM_DELETE_WINDOW messages
+		this->m_deleteMessage = ::XInternAtom(this->m_pDisplayHandle,  "WM_DELETE_WINDOW", False);
+   		::XSetWMProtocols(this->m_pDisplayHandle, this->m_windowHandle, &this->m_deleteMessage, 1);
+
 		// Set Title
 		::XSetStandardProperties(this->m_pDisplayHandle, this->m_windowHandle, title, title, None, NULL, 0, NULL);
 
 		// Select Input Masks
-		::XSelectInput(this->m_pDisplayHandle, this->m_windowHandle, __WEISS__XLIB_ALL_MASKS);
+		constexpr const long xEventMasks = ExposureMask | // Window
+										   PointerMotionMask | ButtonPressMask | ButtonReleaseMask | // Mouse
+										   KeyPressMask | KeyReleaseMask; // Keyboard
+		
+		::XSelectInput(this->m_pDisplayHandle, this->m_windowHandle, xEventMasks);
 
 		this->Show();
 
@@ -185,17 +252,85 @@ namespace WS {
 
 	void Window::Update() WS_NOEXCEPT
 	{
-		this->m_mouse.BeginUpdate();
+		this->m_mouse.PrepareForUpdate();
 
-		this->m_mouse.LinUpdate(this->m_pDisplayHandle);
-		this->m_keyboard.LinUpdate(this->m_pDisplayHandle);
+		// Process Events
+		::XEvent xEvent;
+		while (XPending(this->m_pDisplayHandle))
+		{
+    		XNextEvent(this->m_pDisplayHandle, &xEvent);
+
+			switch (xEvent.type) {
+			// Window Events
+			case DestroyNotify:
+				this->Close();
+				return;
+			
+			case ClientMessage:
+				if ((::Atom)xEvent.xclient.data.l[0] == this->m_deleteMessage) {
+					this->Close();
+					return;
+				}
+				
+				break;
+			// Mouse Events
+			case ButtonPress:
+				switch (xEvent.xbutton.button) {
+				case Button1:
+					this->m_mouse.m_bIsLeftButtonDown = true;
+					break;
+				case Button3:
+					this->m_mouse.m_bIsRightButtonDown = true;
+					break;
+				case Button4:
+					this->m_mouse.m_wheelDelta += xEvent.xbutton.y;
+					break;
+				case Button5:
+					this->m_mouse.m_wheelDelta -= xEvent.xbutton.y;
+					break;
+				}
+
+				this->m_mouse.m_position = { static_cast<uint16_t>(xEvent.xmotion.x),
+											 static_cast<uint16_t>(xEvent.xmotion.y) };
+
+				break;
+			case ButtonRelease:
+				switch (xEvent.xbutton.button) {
+				case 1:
+					this->m_mouse.m_bIsLeftButtonDown = false;
+					break;
+				case 3:
+					this->m_mouse.m_bIsRightButtonDown = false;
+					break;
+				}
+
+				this->m_mouse.m_position = { static_cast<uint16_t>(xEvent.xmotion.x),
+											 static_cast<uint16_t>(xEvent.xmotion.y) };
+
+				break;
+			case MotionNotify:
+				this->m_mouse.m_position = { static_cast<uint16_t>(xEvent.xmotion.x),
+											 static_cast<uint16_t>(xEvent.xmotion.y) };
+
+				break;
+
+			// Keyboard Events
+			case KeyPress:
+				this->m_keyboard.m_downKeys[std::toupper(XLookupKeysym(&xEvent.xkey, 0))] = true;
+				break;
+			case KeyRelease:
+				this->m_keyboard.m_downKeys[std::toupper(XLookupKeysym(&xEvent.xkey, 0))] = false;
+				break;
+			}
+		}
 	}
 
 #endif
 
 	Window::~Window() WS_NOEXCEPT
 	{
-		this->Close();
+		if (this->m_bIsRunning)
+			this->Close();
 	}
 
 }; // WS

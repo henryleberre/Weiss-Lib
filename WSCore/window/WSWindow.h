@@ -1,14 +1,8 @@
 #pragma once
 
-#include "../misc/WSPch.h"
 #include "WSPeripheral.h"
-
-#ifdef __WEISS__OS_LINUX
-
-    #define __WEISS__XLIB_WINDOW_MASKS (ExposureMask)
-    #define __WEISS__XLIB_ALL_MASKS (__WEISS__XLIB_WINDOW_MASKS | __WEISS__XLIB_MOUSE_MASKS | __WEISS__XLIB_KEYBOARD_MASKS)
-
-#endif // __WEISS__OS_LINUX
+#include "../misc/WSPch.h"
+#include "../math/WSVector.h"
 
 namespace WS {
 
@@ -29,16 +23,12 @@ namespace WS {
         ::Display* m_pDisplayHandle;
         ::Window   m_windowHandle;
 
-        static constexpr const long windowMasks = ExposureMask;
-        static constexpr const long mouseMasks = PointerMotionMask | ButtonPressMask | ButtonReleaseMask;
-        static constexpr const long keyboardMasks = KeyPressMask | KeyReleaseMask;
-        
-        static constexpr const long masks = windowMasks | mouseMasks | keyboardMasks;
+        ::Atom m_deleteMessage;
 
 #endif
 
-        Mouse    m_mouse;
-        Keyboard m_keyboard;
+        ::WS::Mouse m_mouse;
+        ::WS::Keyboard m_keyboard;
 
         bool m_bIsRunning = false;
 
@@ -55,9 +45,9 @@ namespace WS {
 
         void Update() WS_NOEXCEPT;
 
-        inline const bool      IsRunning()   const noexcept { return this->m_bIsRunning; }
-        inline const Mouse&    GetMouse()    const noexcept { return this->m_mouse;      }
-        inline const Keyboard& GetKeyboard() const noexcept { return this->m_keyboard;   }
+        inline const bool            IsRunning()   const noexcept { return this->m_bIsRunning; }
+        inline const ::WS::Mouse&    GetMouse()    const noexcept { return this->m_mouse;      }
+        inline const ::WS::Keyboard& GetKeyboard() const noexcept { return this->m_keyboard;   }
 
 #ifdef __WEISS__OS_WINDOWS
 

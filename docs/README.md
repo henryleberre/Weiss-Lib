@@ -35,6 +35,7 @@
 + Run ```cd Weiss-lib``` to navigate the cloned repository
 + Run ```cmake .``` to generate the build files
 + Run ```make``` to build the application
++ **__additionally__**, you can install ```valgrind``` with ```sudo apt-get install valgrind``` to track memory (leaks & seg faults), you then compile & run with the command ```clear && cmake . && make && valgrind -v ./WeissSample```
 
 # Documentation Used By Weiss-lib
 
