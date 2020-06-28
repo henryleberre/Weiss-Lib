@@ -4,7 +4,7 @@ int WS::EntryPoint(int argc, char** argv) {
     WS::Window window("Weiss Test", 1920 / 2, 720);
     //WS::Image test("Branding/icon64x64.png");
 
-    while (true) {
+    while (window.IsRunning()) {
         window.Update();
 
         std::this_thread::sleep_for(std::chrono::milliseconds(16));

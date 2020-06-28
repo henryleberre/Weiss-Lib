@@ -182,12 +182,6 @@ namespace WS {
 			return 0;
 		}
 
-		std::optional<LRESULT> mouseOptional = this->m_mouse.WinHandleEvent(msg, wParam, lParam);
-		if (mouseOptional.has_value()) return mouseOptional.value();
-
-		std::optional<LRESULT> keyboardOptional = this->m_keyboard.WinHandleEvent(msg, wParam, lParam);
-		if (keyboardOptional.has_value()) return keyboardOptional.value();
-
 		return {  };
 	}
 
